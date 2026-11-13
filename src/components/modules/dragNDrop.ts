@@ -72,12 +72,21 @@ export default class DragNDrop extends Module {
       Paste,
       Caret,
     } = this.Editor;
-
-    dropEvent.preventDefault();
-
+    
     BlockManager.blocks.forEach((block) => {
       block.dropTarget = false;
     });
+
+    let target = dropEvent.target as Element;
+    let currentTarget = dropEvent.currentTarget as Element;
+
+    let skipDropArea = target.closest('.skip-editor-drop');
+
+    if(skipDropArea && currentTarget !== skipDropArea && currentTarget.contains(skipDropArea)) {
+      return;
+    }
+
+    dropEvent.preventDefault();
 
     if (SelectionUtils.isAtEditor && !SelectionUtils.isCollapsed && this.isStartedAtEditor) {
       document.execCommand('delete');
